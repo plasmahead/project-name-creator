@@ -1,7 +1,14 @@
 <?php
+/**
+ * @author Peter Belgrove <peter@plasmahead.com>
+ */
 
 namespace PNC;
 
+
+/**
+ * Class to generate random project names. 
+ */
 class Creator
 {
 
@@ -13,17 +20,28 @@ class Creator
     private $verbs = array();
     private $adjectives = array();
 
+
+    /**
+     * Load files that contain english parts of speach
+     *
+     * @return void
+     */
     private function _loadFiles()
     {
         $this->_loadFile('nounlist.txt', $this->nouns);
         $this->_loadFile('parts-of-speech-word-files/verbs/1syllableverbs.txt', $this->verbs);
         $this->_loadFile('adjectives.txt', $this->adjectives);
-
-        //print_r($this->verbs);
     }
 
-
-    private function _loadFile($path, &$store)
+    
+    /**
+     * Take path to file and load it's contents into variable
+     *
+     * @param [string] $path
+     * @param [array] $store
+     * @return void
+     */
+    private function _loadFile($path, array &$store)
     {
 
         $store = array();
@@ -44,7 +62,11 @@ class Creator
     
     static $instance;
 
-    // Singleton 
+    /**
+     * Singleton pattern
+     *
+     * @return __CLASS__
+     */
     static public function getInstance()
     {
         if(self::$instance === null)
@@ -56,13 +78,21 @@ class Creator
 
 
 
-    // prevent object from being instanciated externally
+    /**
+     * Make constructor private to prevent object from being instanciated externally
+     */
     private function __construct()
     {
         $this->_loadFiles();
     }
 
 
+
+    /**
+     * Go through words and build data for words that sound similar
+     *
+     * @return void
+     */
     public function initWords()
     {
         $key1 = array_rand($this->nouns);
@@ -120,18 +150,34 @@ class Creator
         return $a;
     }
 
+
+    /**
+     * Set glue and allow method chaining
+     *
+     * @return void
+     */
     public function dashed()
     {
         $this->glue = '-';
         return $this;
     }
 
+    /**
+     * Set glue and allow method chaining
+     *
+     * @return void
+     */    
     public function spaced()
     {
         $this->glue = ' ';
         return $this;
     }    
 
+    /**
+     * Set glue and allow method chaining
+     *
+     * @return void
+     */    
     public function humped()
     {
         $this->glue = '';
@@ -139,6 +185,13 @@ class Creator
         return $this;
     } 
 
+
+    
+    /**
+     * Concat words together with glue and return string
+     *
+     * @return string
+     */
     public function __toString()
     {
         $words = $this->words;
@@ -151,22 +204,5 @@ class Creator
         return implode($this->glue, $words);
     }
 }
-
-
-for($i = 0; $i < 9; $i++)
-{
-    echo Creator::generate('n1a2v2')->dashed();  
-    echo "\n";      
-}
-
-
-exit;
-echo Creator::generate('words', 10, 'numbers', true)->dashed();
-echo "\n";
-echo Creator::generate()->spaced();
-echo "\n";
-echo Creator::generate()->humped();
-echo "\n";
-echo Creator::generate()->spaced();
 
 ?>
